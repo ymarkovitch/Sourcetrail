@@ -41,7 +41,7 @@ QtTable::QtTable(QWidget* parent): QTableView(parent), m_rowsToFill(0)
 
 	setItemDelegate(new SelectableCellDelegate(this));
 
-	verticalHeader()->sectionResizeMode(QHeaderView::Fixed);
+	verticalHeader()->setSectionResizeMode(QHeaderView::Fixed);
 	verticalHeader()->setDefaultAlignment(Qt::AlignRight);
 
 	horizontalHeader()->setStretchLastSection(true);
@@ -54,6 +54,12 @@ QtTable::QtTable(QWidget* parent): QTableView(parent), m_rowsToFill(0)
 }
 
 QtTable::~QtTable() {}
+
+void QtTable::updateResizeRows()
+{
+	verticalHeader()->setMinimumSectionSize(0);
+	verticalHeader()->setDefaultSectionSize(ApplicationSettings::getInstance()->getFontSize() + 6);
+}
 
 void QtTable::updateRows()
 {
@@ -81,7 +87,6 @@ void QtTable::updateRows()
 		ApplicationSettings::getInstance()->getFontSize() * 0.7 * int(1 + std::log10(rowCount)));
 
 	verticalHeader()->setStyleSheet("::section { width: " + QString::number(width) + "px; }");
-	verticalHeader()->setDefaultSectionSize(ApplicationSettings::getInstance()->getFontSize() + 6);
 
 	if (this->selectionModel()->hasSelection() &&
 		selectionModel()->selection().indexes()[0].row() >= model()->rowCount() - 2)
@@ -89,7 +94,7 @@ void QtTable::updateRows()
 		clearSelection();
 	}
 
-	resizeRowsToContents();
+	updateResizeRows();
 }
 
 int QtTable::getFilledRowCount()
@@ -125,7 +130,7 @@ bool QtTable::hasSelection() const
 
 void QtTable::columnResized(int column, int oldWidth, int newWidth)
 {
-	resizeRowsToContents();
+	updateResizeRows();
 }
 
 void QtTable::resizeEvent(QResizeEvent* event)

@@ -33,6 +33,9 @@ private:
 
 	int m_colIndex = -1;
 	int m_lastPos = -1;
+
+private:
+	void updateResizeRows();
 };
 
 #endif	  // QT_TABLE_H
